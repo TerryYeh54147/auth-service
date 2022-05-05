@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -73,10 +74,20 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+DATABASE_ENV_HOST = os.environ.get("POSTGRES_HOST") or "127.0.0.1"
+DATABASE_ENV_PORT = os.environ.get("POSTGRES_PORT") or "5432"
+DATABASE_ENV_DB_NAME = os.environ.get("POSTGRES_DATABASE") or "auth_service"
+DATABASE_ENV_USER_NAME = os.environ.get("POSTGRES_USERNAME") or "postgres"
+DATABASE_ENV_USER_PASSWD = os.environ.get("POSTGRES_PASSWORD") or "ailabailab4051"
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": DATABASE_ENV_DB_NAME,
+        "USER": DATABASE_ENV_USER_NAME,
+        "PASSWORD": DATABASE_ENV_USER_PASSWD,
+        "HOST": DATABASE_ENV_HOST,
+        "PORT": DATABASE_ENV_PORT,
     }
 }
 
