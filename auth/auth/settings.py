@@ -40,7 +40,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # local apps
     'account',
+    # third party apps
+    'rest_framework',
+    'drf_yasg',
 ]
+
+# Django Rest framework setting
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ]
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -111,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+AUTH_USER_MODEL = "account.Account"
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
