@@ -92,7 +92,7 @@ DATABASE_ENV_HOST = os.environ.get("POSTGRES_HOST") or "127.0.0.1"
 DATABASE_ENV_PORT = os.environ.get("POSTGRES_PORT") or "5432"
 DATABASE_ENV_DB_NAME = os.environ.get("POSTGRES_DATABASE") or "auth_service"
 DATABASE_ENV_USER_NAME = os.environ.get("POSTGRES_USERNAME") or "postgres"
-DATABASE_ENV_USER_PASSWD = os.environ.get("POSTGRES_PASSWORD") or "ailabailab4051"
+DATABASE_ENV_USER_PASSWD = os.environ.get("POSTGRES_PASSWORD") or "postgres"
 
 DATABASES = {
     "default": {
