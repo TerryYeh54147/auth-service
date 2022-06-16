@@ -10,6 +10,6 @@ class Account(AbstractUser):
 
     uid = models.UUIDField(primary_key=True, default=uuid.uuid4(), editable=False)
     role=models.CharField(choices=ROLES, max_length=20, default='guest')
-    phone = models.CharField(max_length=10)
+    phone = models.CharField(max_length=10, blank=True)
     created_at=models.DateTimeField(auto_now_add=True)
     last_edit_at=models.DateTimeField(auto_now=True)
