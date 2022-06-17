@@ -163,4 +163,7 @@ Thumbs.db
 # web (front-end)
 dist/
 
+# rest client(test api)
+*.rest
+
 # End of https://www.toptal.com/developers/gitignore/api/django
