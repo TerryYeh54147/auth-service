@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -44,3 +45,35 @@ def get_all_users(request):
     all_users = Account.objects.all()
     acounts_serializer = AccountSerializer(all_users, many=True)
     return JsonResponse(acounts_serializer.data, safe=False, status=status.HTTP_200_OK)
+
+
+@swagger_auto_schema(
+    methods=['POST'],
+    operation_description='create a new user account',
+)
+@api_view(http_method_names=['POST'])
+def create_user(request):
+    """
+    Create a new user account
+    """
+    filled_data = {'required': ['username', 'password', 'role'], 'nullable': [
+        'email', 'first_name', 'last_name', 'phone']}
+    cur_field = ''
+    try:
+        for required_field in filled_data['required']:
+            cur_field, _ = required_field, request.data[required_field]
+    except KeyError:
+        return JsonResponse({'ErrorMsg': f'KeyError: {cur_field} not found'}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    username = request.data['username']
+    if Account.objects.filter(username=username):
+        return JsonResponse({'ErrorMsg': f"duplicate username: {username}"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    role = request.data['role']
+    if role not in dict(Account.ROLES).keys():
+        return JsonResponse({'ErrorMsg': f"Role: {role} not found"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+    query_data = {k: request.data.get(
+        k) for k in filled_data['required']+filled_data['nullable']}
+    query_data['password'] = make_password(query_data['password'])
+    # TODO: validate password security
+    user = Account.objects.create(**query_data)
+    user_serializer = AccountSerializer(user)
+    return JsonResponse(user_serializer.data, safe=False, status=status.HTTP_200_OK)
