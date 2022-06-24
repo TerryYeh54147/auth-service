@@ -1,5 +1,3 @@
-from calendar import c
-from random import choices
 import uuid
 
 from django.db import models
