@@ -11,5 +11,5 @@ class AccountSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Account
-        fields = ["uid", "username", "role", "email", "phone", "full_name", "last_name",
+        fields = ["id", "username", "role", "email", "phone", "full_name", "last_name",
                   "first_name", "is_superuser", "date_joined", "last_edit_at", "last_login"]

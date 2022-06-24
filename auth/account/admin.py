@@ -7,7 +7,7 @@ from .models import Account
 class AccountAdmin(UserAdmin):
     list_display = ('username', 'role', 'email', 'phone',
                     'date_joined', 'last_edit_at')
-    search_fields = ('uid', 'username', 'email', 'phone')
+    search_fields = ('id', 'username', 'email', 'phone')
     list_filter = ['role', 'is_staff', 'is_superuser']
     fieldsets = UserAdmin.fieldsets
 
