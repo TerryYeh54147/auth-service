@@ -61,7 +61,8 @@ def create_user(request):
     cur_field = ''
     try:
         for required_field in filled_data['required']:
-            cur_field, _ = required_field, request.data[required_field]
+            cur_field = required_field
+            _ = request.data[required_field]
     except KeyError:
         return JsonResponse({'ErrorMsg': f'KeyError: {cur_field} not found'}, safe=False, status=status.HTTP_400_BAD_REQUEST)
     username = request.data['username']
