@@ -1,4 +1,3 @@
-from django.contrib.auth.hashers import make_password
 from django.http import JsonResponse
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
@@ -79,7 +78,6 @@ def create_user(request):
     if len(validate_pwd_error):
         err_msg = '/'.join(validate_pwd_error)
         return JsonResponse({'msg': err_msg}, safe=False, status=status.HTTP_400_BAD_REQUEST)
-    query_data['password'] = make_password(query_data['password'])
     user = Account.objects.create_user(**query_data)
     user_serializer = AccountSerializer(user)
     return JsonResponse(user_serializer.data, safe=False, status=status.HTTP_200_OK)
