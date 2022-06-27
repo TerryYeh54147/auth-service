@@ -1,3 +1,5 @@
+import random
+
 from django.test import TestCase
 from rest_framework import status
 
@@ -23,6 +25,7 @@ class AccountTest(TestCase):
             'login': 'login/',
             'create': 'add/',
         }
+        cls.rand_seed = 10
 
     def get_login_token(self):
         url = self.urls['api_host'] + self.urls['login']
@@ -48,13 +51,21 @@ class AccountTest(TestCase):
     '''
 
     def test_create_account_duplicate(self):
+        duplicate_username = self.user_data['username']
+        # print(f'\n>>>[testing] duplicate username: {duplicate_username}')
+        msg = f"duplicate username: {duplicate_username}"
         response = self.create_account(self.user_data)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.json()['ErrorMsg'], msg)
 
     def test_create_account_losing_critical_key(self):
+        critical_keys = ['username', 'password', 'role']
+        target_key = critical_keys[random.randint(0, len(critical_keys) - 1)]
+        # print(f'\n>>>[testing] losing target_key: {target_key}')
+        msg = f'KeyError: {target_key} not found'
         data = self.user_data.copy()
-        del data['username']
+        del data[target_key]
         response = self.create_account(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
+        self.assertEqual(response.json()['ErrorMsg'], msg)
     
