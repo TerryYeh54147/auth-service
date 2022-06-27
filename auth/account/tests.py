@@ -1,7 +1,7 @@
-from urllib import response
 from django.test import TestCase
-from .models import Account
 from rest_framework import status
+
+from .models import Account
 
 
 # Create your tests here.
@@ -35,8 +35,17 @@ class AccountTest(TestCase):
     def create_account(self, data=None):
         url = self.urls['api_host'] + self.urls['create']
         header = self.get_login_token()
-        print(f'cur data: {data}')
         return self.client.post(url, data, content_type='application/json', HTTP_AUTHORIZATION=header)
+
+    '''
+    # TODO: solve this duplicate key issue
+    def test_create_account_success(self):
+        data = self.user_data.copy()
+        data['username'] = 'testuser2'
+        data['first_name'] = 'user2'
+        response = self.create_account(data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    '''
 
     def test_create_account_duplicate(self):
         response = self.create_account(self.user_data)
