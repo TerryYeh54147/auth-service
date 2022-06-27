@@ -82,3 +82,12 @@ class AccountTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json()['msg'], msg)
     
+    def test_create_account_wrong_role_option(self):
+        wrong_role = 'maintainers'
+        msg = f'Role: {wrong_role} not found'
+        data = self.user_data.copy()
+        data['username'] = 'testRole'
+        data['role'] = wrong_role
+        response = self.create_account(data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()['msg'], msg)
