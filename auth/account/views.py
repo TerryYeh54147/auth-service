@@ -68,7 +68,7 @@ def create_user(request):
         return JsonResponse({'ErrorMsg': f'KeyError: {cur_field} not found'}, safe=False, status=status.HTTP_400_BAD_REQUEST)
     username = request.data['username']
     if Account.objects.filter(username=username):
-        return JsonResponse({'ErrorMsg': f"duplicate username: {username}"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
+        return JsonResponse({'ErrorMsg': f"duplicate username: {username}"}, safe=False, status=status.HTTP_409_CONFLICT)
     role = request.data['role']
     if role not in dict(Account.ROLES).keys():
         return JsonResponse({'ErrorMsg': f"Role: {role} not found"}, safe=False, status=status.HTTP_400_BAD_REQUEST)
