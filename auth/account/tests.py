@@ -27,13 +27,26 @@ class AccountTest(TestCase):
         }
         cls.rand_seed = 10
 
-    def get_login_token(self):
+
+    def login_account(self, username, password):
         url = self.urls['api_host'] + self.urls['login']
-        login_data = {'username':self.user_data['username'], 'password':self.user_data['password']}
+        login_data = {'username': username, 'password': password}
         response = self.client.post(url, data=login_data, content_type='application/json')
+        return response
+
+    def get_login_token(self):
+        login_data = {'username':self.user_data['username'], 'password':self.user_data['password']}
+        response = self.login_account(**login_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         token = response.json()['access']
         return f'Bear {token}'
+
+    def test_login_access(self):
+        msg = 'Login successful.'
+        login_data = {'username':self.user_data['username'], 'password':self.user_data['password']}
+        response = self.login_account(**login_data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['msg'], msg)
 
     def create_account(self, data=None):
         url = self.urls['api_host'] + self.urls['create']
@@ -56,7 +69,7 @@ class AccountTest(TestCase):
         msg = f"duplicate username: {duplicate_username}"
         response = self.create_account(self.user_data)
         self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
-        self.assertEqual(response.json()['ErrorMsg'], msg)
+        self.assertEqual(response.json()['msg'], msg)
 
     def test_create_account_losing_critical_key(self):
         critical_keys = ['username', 'password', 'role']
@@ -67,5 +80,5 @@ class AccountTest(TestCase):
         del data[target_key]
         response = self.create_account(data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json()['ErrorMsg'], msg)
+        self.assertEqual(response.json()['msg'], msg)
     
