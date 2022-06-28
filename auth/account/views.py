@@ -19,8 +19,8 @@ def login(request):
         username = request.data['username']
         password = request.data['password']
     except KeyError:
-        error_msg = {"KeyError": "username and password are required."}
-        return JsonResponse(error_msg, status=status.HTTP_400_BAD_REQUEST)
+        msg['msg'] = f'KeyError: username and password are required.'
+        return JsonResponse(msg, status=status.HTTP_400_BAD_REQUEST)
     auth = Auth(request)
     if auth.login(username, password):
         msg = auth.token

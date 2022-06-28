@@ -1,4 +1,5 @@
 import random
+from urllib import response
 
 from django.test import TestCase
 from django.conf import settings
@@ -30,7 +31,7 @@ class AccountTest(TestCase):
     def setUp(self):
         self.new_user = Account.objects.create_user(**self.user_data)
 
-    def login_account(self, username, password):
+    def login_account(self, username=None, password=None):
         url = self.urls['api_host'] + self.urls['login']
         login_data = {'username': username, 'password': password}
         response = self.client.post(
@@ -51,6 +52,35 @@ class AccountTest(TestCase):
             'username': self.user_data['username'], 'password': self.user_data['password']}
         response = self.login_account(**login_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json()['msg'], msg)
+
+    def test_login_key_error(self):
+        url = self.urls['api_host'] + self.urls['login']
+        msg = 'KeyError: username and password are required.'
+        login_data = {
+            'username': self.user_data['username']}
+        response = self.client.post(
+            url, data=login_data, content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(response.json()['msg'], msg)
+
+
+    def test_login_invalid_username(self):
+        msg = 'Invalid username or password.'
+        wrong_username='invalid_username'
+        login_data = {
+            'username': wrong_username, 'password': self.user_data['password']}
+        response = self.login_account(**login_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.json()['msg'], msg)
+
+    def test_login_invalid_password(self):
+        msg = 'Invalid username or password.'
+        wrong_password='invalid_username'
+        login_data = {
+            'username': self.user_data['username'], 'password': wrong_password}
+        response = self.login_account(**login_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(response.json()['msg'], msg)
 
     def create_account(self, data=None):
