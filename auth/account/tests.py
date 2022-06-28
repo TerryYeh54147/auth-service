@@ -63,7 +63,7 @@ class AccountTest(TestCase):
         data['username'] = 'testuser2'
         data['first_name'] = 'user2'
         response = self.create_account(data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_account_duplicate(self):
         duplicate_username = self.user_data['username']

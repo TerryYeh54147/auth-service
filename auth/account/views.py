@@ -80,4 +80,4 @@ def create_user(request):
         return JsonResponse({'msg': err_msg}, safe=False, status=status.HTTP_400_BAD_REQUEST)
     user = Account.objects.create_user(**query_data)
     user_serializer = AccountSerializer(user)
-    return JsonResponse(user_serializer.data, safe=False, status=status.HTTP_200_OK)
+    return JsonResponse(user_serializer.data, safe=False, status=status.HTTP_201_CREATED)
