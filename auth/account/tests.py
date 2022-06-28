@@ -53,6 +53,24 @@ class AccountTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json()['msg'], msg)
 
+    def test_login_invalid_username(self):
+        msg = 'Invalid username or password.'
+        wrong_username='invalid_username'
+        login_data = {
+            'username': wrong_username, 'password': self.user_data['password']}
+        response = self.login_account(**login_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.json()['msg'], msg)
+
+    def test_login_invalid_password(self):
+        msg = 'Invalid username or password.'
+        wrong_password='invalid_username'
+        login_data = {
+            'username': self.user_data['username'], 'password': wrong_password}
+        response = self.login_account(**login_data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.json()['msg'], msg)
+
     def create_account(self, data=None):
         url = self.urls['api_host'] + self.urls['create']
         header = self.get_login_token()
