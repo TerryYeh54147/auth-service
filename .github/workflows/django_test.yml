@@ -7,26 +7,38 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
-
+  django-testers:
+    name: django testers
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
         python-version: [3.7]
-     
-     services:
-      db:
-        image: postgres
+    # setup postgres DB
+    env:
+      MY_POSTGRES_USER: postgres
+      MY_POSTGRES_PASSWORD: postgres
+      MY_POSTGRES_DATABASE: postgres
+      MY_POSTGRES_HOST: localhost
+    services:
+      postgres_main:
+        image: postgres:12
         env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_USERNAME: ${{ env.MY_POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ env.MY_POSTGRES_PASSWORD }}
+          POSTGRES_DATABASE: ${{ env.MY_POSTGRES_DATABASE }}
+          POSTGRES_HOST: ${{ env.MY_POSTGRES_HOST}}
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd pg_isready 
+          --health-interval 10s 
+          --health-timeout 5s 
+          --health-retries 5
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
