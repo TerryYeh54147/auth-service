@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'auth.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASE_ENV_HOST = os.environ.get("POSTGRES_HOST") or "127.0.0.1"
+DATABASE_ENV_HOST = os.environ.get("POSTGRES_HOST") or "localhost"
 DATABASE_ENV_PORT = os.environ.get("POSTGRES_PORT") or "5432"
 DATABASE_ENV_DB_NAME = os.environ.get("POSTGRES_DATABASE") or "auth_service"
 DATABASE_ENV_USER_NAME = os.environ.get("POSTGRES_USERNAME") or "postgres"
