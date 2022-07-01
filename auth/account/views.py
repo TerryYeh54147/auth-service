@@ -40,14 +40,18 @@ def login(request):
     operation_description='Accept pass any params belong Account model, and only filter datetime instances that match date.'
 )
 @api_view(http_method_names=['GET'])
-def get_users(request):
+def get_users(request, user_id=None):
     """
     Get accounts' data and order by id
     Default get all accounts' data
     Accept pass any params belong Account model, and its element can be multiple except the datetime field 
     For datetime fields, only filter datetime instances that matches date or null
     """
-    users = Account.objects.all().order_by('id')
+    users = Account.objects.all().order_by('id')  
+    if user_id is not None:
+        users = Account.objects.filter(pk=user_id)
+        if len(users) == 0:
+            return JsonResponse({'msg': f'id: {user_id} is not found'}, safe=False, status=status.HTTP_404_NOT_FOUND)
     # print(f'request data: {request.GET}')
     # print(f'request keys: {request.GET.keys()}')
     params_key = request.GET.keys()
