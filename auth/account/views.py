@@ -47,7 +47,7 @@ def get_users(request, user_id=None):
     Accept pass any params belong Account model, and its element can be multiple except the datetime field 
     For datetime fields, only filter datetime instances that matches date or null
     """
-    users = Account.objects.all().order_by('id')  
+    users = Account.objects.all().order_by('id')
     if user_id is not None:
         users = Account.objects.filter(pk=user_id)
         if len(users) == 0:
@@ -68,17 +68,16 @@ def get_users(request, user_id=None):
             # Unsupported lookup '' for UUIDField or join on the field not permitted
             if field_type == 'UUIDField':
                 return JsonResponse({'msg': f'Params key unsupported lookup for {field_type} or join on the field not permitted'}, safe=False, status=status.HTTP_400_BAD_REQUEST)
-            filter_key = f'{key}__'
+            filter_key = f'{key}__in'
             is_datetime_type =  field_type == 'DateTimeField'
             val_split_char = '-' if is_datetime_type else ','
             filter_val = request.GET.get(key)
             filter_vals = filter_val.split(val_split_char)
             if is_datetime_type:
                 filter_vals = True if filter_vals[0] == 'null' else dt.date(*list(map(int, filter_vals[:3])))
-            if is_datetime_type:
-                filter_key += 'isnull' if filter_vals is True else 'contains'
+                filter_key.replace('in', 'isnull' if filter_vals else 'contains' )
             args[filter_key] = filter_vals
-    print(f'args: {args}')
+    # print(f'args: {args}')
     users = users.filter(**args)
     acounts_serializer = AccountSerializer(users, many=True)
     return JsonResponse(acounts_serializer.data, safe=False, status=status.HTTP_200_OK)
